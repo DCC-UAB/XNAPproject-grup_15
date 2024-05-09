@@ -1,4 +1,4 @@
-### Preguntes fetes per la sessió 1:
+# Preguntes fetes per la sessió 1:
 
 Durant aquesta primera sessió, ens volem centrar en analitzar les dades que tenim. Això ens ajudarà a definir el nostre enfocament per a les pròximes sessions i elaborar un model que s'adapti al nostre problema. En el nostre cas, disposem de tres fonts de dades diferents, cadascuna amb el seu propi conjunt d'entrenament, de test i de validació. Aquestes fonts de dades són AFAD, CACD i MORPH. 
 
