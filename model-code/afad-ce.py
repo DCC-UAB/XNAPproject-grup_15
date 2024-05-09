@@ -22,14 +22,13 @@ from torchvision import transforms
 from PIL import Image
 
 torch.backends.cudnn.deterministic = True
-
-TRAIN_CSV_PATH = './afad_train.csv'
-TEST_CSV_PATH = './afad_test.csv'
-IMAGE_PATH = '/shared_datasets/AFAD/orig/tarball/AFAD-Full'
+print(os.getcwd(),'\n\n\n')
+TRAIN_CSV_PATH = './datasets/afad_train.csv'
+TEST_CSV_PATH = './datasets/afad_test.csv'
+IMAGE_PATH = '/dataset_img/dataset2/AFAD-Full'
 
 
 # Argparse helper
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--cuda',
                     type=int,
@@ -49,6 +48,7 @@ parser.add_argument('--outpath',
                     required=True)
 
 args = parser.parse_args()
+print(torch.cuda.is_available(), 98989)
 
 NUM_WORKERS = args.numworkers
 
@@ -160,6 +160,7 @@ test_loader = DataLoader(dataset=test_dataset,
                          shuffle=False,
                          num_workers=NUM_WORKERS)
 
+assert torch.cuda.is_available(), "GPU is not enabled"
 
 ##########################
 # MODEL
