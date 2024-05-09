@@ -11,11 +11,7 @@ Durant aquesta primera sessió, ens volem centrar en analitzar les dades que ten
 A partir d'aquestes fonts, volem respondre les següents preguntes:
 
 
-## 1. **Distribució d'edats**:
-   **Objectiu**: Conèixer la distribució d'edats t'ajuda a entendre si el teu model tindrà prou representació de cada franja d'edat per aprendre adequadament i no esbiaixar-se cap a certs grups.
-   
-· Quin és el rang d'edats en cada conjunt de dades?
-
-· Està la distribució d'edats equilibrada o hi ha més dades en certs grups d'edat?
- 
+## Distribució d'Edats:
+· Quin és el rang d'edats en cada conjunt (train, test i validation) per a cadascuna de les fonts de dades (AFAD, CACD, MORPH)?
+· Està equilibrada la distribució d'edats en cada conjunt? Si no, hi ha grups d'edat amb una major representació que d'altres?
 
