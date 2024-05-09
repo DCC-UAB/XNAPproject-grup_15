@@ -10,10 +10,12 @@ Durant aquesta primera sessió, ens volem centrar en analitzar les dades que ten
 
 A partir d'aquestes fonts, volem respondre les següents preguntes:
 
-## 1. Distribución de Edades: 
-   **Objectiu :** Saber la distribución de edades te ayuda a entender si tu modelo tendrá suficiente representación de cada rango de edad para aprender adecuadamente y no sesgarse hacia ciertos grupos.
- · ¿Cuál es el rango de edades en cada conjunto de datos?
- 
- · ¿Está la distribución de edades equilibrada o hay más datos en ciertos grupos de edad?
+
+## 1. **Distribució d'edats**:
+   **Objectiu**: Conèixer la distribució d'edats t'ajuda a entendre si el teu model tindrà prou representació de cada franja d'edat per aprendre adequadament i no esbiaixar-se cap a certs grups.
+   
+· Quin és el rang d'edats en cada conjunt de dades?
+
+· Està la distribució d'edats equilibrada o hi ha més dades en certs grups d'edat?
  
 
