@@ -3,3 +3,21 @@
 - Metric Test
 - Loss Train 
 - Loss Test
+
+COSES A FER:
+- 1. Obtenir Datasets Retallats
+    - rang edats
+    - aleatori --> CUIDADO!!! la distribucio OJO
+    - edats concretes
+
+- 2. Provar altres funcions COST (LOSS)
+    - CE i CE modificats (els del START POINT)
+    - MSE, MAE (per que el model consideri la diferència de edat de les predicts)
+
+- 3. Provar diferents mètriques
+    - L1/L2...
+
+- 2. Canviar arquitectura model
+    - Squezee
+    - Canviar Resnet
+    - canviar el model en si...
