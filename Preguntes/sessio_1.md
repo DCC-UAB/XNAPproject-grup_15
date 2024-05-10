@@ -17,12 +17,13 @@ A partir d'aquestes fonts, volem respondre les següents preguntes:
 
 · Quin és el rang d'edats en cada conjunt (train, test i validation) per a cadascuna de les fonts de dades (AFAD, CACD, MORPH)?
 · Està equilibrada la distribució d'edats en cada conjunt? Si no, hi ha grups d'edat amb una major representació que d'altres?
+- comparar distribucions d'edats entre groundtruth i predicted
 
 ## 2. Quantitat de Dades:
 
 **Objectiu:** Comprovar que hi ha prou dades per entrenar, validar i testejar el model, evitant el sobreajustament i l'infraajustament.
 
-· Quin és el nombre d'imatges en cada conjunt (train, test, validation) per a cada font de dades?
+· Quin és el nombre d'imatges en cada conjunt (train, test, validation) per a cada font de dades? (10%,10%,80%)
 
 · El conjunt d'entrenament (train) és prou gran per evitar el sobreajustament, és a dir, que el model no aprengui només les característiques específiques de les dades d'entrenament?
 
@@ -46,7 +47,8 @@ A partir d'aquestes fonts, volem respondre les següents preguntes:
 
 
 
-
+- que passa quan fas data augmentation, feature extraction, fine tuning?
+- ficar arquitectures diferents a la resnet34 , per exemple resnet 50
 
 
 
