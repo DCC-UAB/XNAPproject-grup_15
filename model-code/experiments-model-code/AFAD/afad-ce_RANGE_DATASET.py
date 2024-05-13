@@ -24,12 +24,9 @@ import wandb
 
 torch.backends.cudnn.deterministic = True
 print(os.getcwd(),'\n\n\n')
-TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset/afad_train.csv'
-TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset/afad_test.csv'
+TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_train.csv'
+TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_test.csv'
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
-
-# Wandb initialization
-wandb.init(project='afad-ce', entity='xnmaster')
 
 # Argparse helper
 parser = argparse.ArgumentParser()
@@ -89,19 +86,34 @@ with open(LOGFILE, 'w') as f:
         f.write('%s\n' % entry)
         f.flush()
 
-
 ##########################
 # SETTINGS
 ##########################
 
 # Hyperparameters
 learning_rate = 0.0005
-num_epochs = 200
+num_epochs = 25
 
 # Architecture
-NUM_CLASSES = 26
+NUM_CLASSES = 9
 BATCH_SIZE = 256
 GRAYSCALE = False
+
+### WANDB INITIALIZATION
+# Wandb initialization
+wandb.init(
+    # set the wandb project where this run will be logged
+        project="afad-ce",
+
+        # track hyperparameters and run metadata
+        config={
+            "learning_rate": learning_rate,
+            "architecture": "ordinal",
+            "dataset": "afad",
+            "epochs": num_epochs,
+            }
+    )
+
 
 ###################
 # Dataset
@@ -342,6 +354,8 @@ for epoch in range(num_epochs):
             with open(LOGFILE, 'a') as f:
                 f.write('%s\n' % s)
 
+        
+
     model.eval()
     with torch.set_grad_enabled(False):
         test_mae, test_mse = compute_mae_and_mse(model, test_loader,
@@ -371,6 +385,11 @@ with torch.set_grad_enabled(False):  # save memory during inference
                                                device=DEVICE)
     test_mae, test_mse = compute_mae_and_mse(model, test_loader,
                                              device=DEVICE)
+    
+    # LOG TO W&B
+    wandb.log({'epoch':epoch, 
+                       'train_mae':train_mae, 'train_mse':train_mse,
+                       'test_mae':test_mae, 'test_mse':test_mse})
 
     s = 'MAE/RMSE: | Train: %.2f/%.2f | Test: %.2f/%.2f' % (
         train_mae, torch.sqrt(train_mse), test_mae, torch.sqrt(test_mse))
@@ -406,3 +425,5 @@ with torch.set_grad_enabled(False):
 with open(TEST_PREDICTIONS, 'w') as f:
     all_pred = ','.join(all_pred)
     f.write(all_pred)
+
+wandb.finish()
