@@ -1,11 +1,12 @@
 # coding: utf-8
 
 #############################################
-# Cross Entropy with ResNet-34 WITH RANGE SPLIT DATASET
+# Cross Entropy with ResNet-34
 #############################################
 
 # Imports
 
+import wandb
 import os
 import time
 import pandas as pd
@@ -20,15 +21,18 @@ from torch.utils.data import DataLoader
 
 from torchvision import transforms
 from PIL import Image
-import wandb
 
 torch.backends.cudnn.deterministic = True
-print(os.getcwd(),'\n\n\n')
-TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_train.csv'
-TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_test.csv'
+
+torch.cuda.empty_cache()
+
+TRAIN_CSV_PATH = "/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANDOM_splitted_datasets/afad_splitRANDOM_train.csv"
+TEST_CSV_PATH = "/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANDOM_splitted_datasets/afad_splitRANDOM_test.csv"
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
 
+
 # Argparse helper
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--cuda',
                     type=int,
@@ -48,7 +52,6 @@ parser.add_argument('--outpath',
                     required=True)
 
 args = parser.parse_args()
-print(torch.cuda.is_available(), 98989)
 
 NUM_WORKERS = args.numworkers
 
@@ -86,6 +89,7 @@ with open(LOGFILE, 'w') as f:
         f.write('%s\n' % entry)
         f.flush()
 
+
 ##########################
 # SETTINGS
 ##########################
@@ -95,25 +99,23 @@ learning_rate = 0.0005
 num_epochs = 25
 
 # Architecture
-NUM_CLASSES = 9
+NUM_CLASSES = 10     # 10 classes per edats amb labels 0-9
 BATCH_SIZE = 256
 GRAYSCALE = False
 
-### WANDB INITIALIZATION
-# Wandb initialization
+
+###############################
+# WANDB INIT
+###############################
 wandb.init(
-    # set the wandb project where this run will be logged
-        project="afad-ce",
-
-        # track hyperparameters and run metadata
-        config={
-            "learning_rate": learning_rate,
-            "architecture": "ordinal",
-            "dataset": "afad",
-            "epochs": num_epochs,
-            }
-    )
-
+    project="afad-ce",
+    config={
+        "learning_rate": learning_rate,
+        "architecture": "ordinal",
+        "dataset": "afad",
+        "epochs": num_epochs,
+    }
+)
 
 ###################
 # Dataset
@@ -175,7 +177,6 @@ test_loader = DataLoader(dataset=test_dataset,
                          shuffle=False,
                          num_workers=NUM_WORKERS)
 
-assert torch.cuda.is_available(), "GPU is not enabled"
 
 ##########################
 # MODEL
@@ -348,13 +349,12 @@ for epoch in range(num_epochs):
         # LOGGING
         if not batch_idx % 50:
             s = ('Epoch: %03d/%03d | Batch %04d/%04d | Cost: %.4f'
-                 % (epoch+1, num_epochs, batch_idx,
-                     len(train_dataset)//BATCH_SIZE, cost))
+                % (epoch+1, num_epochs, batch_idx,
+                    len(train_dataset)//BATCH_SIZE, cost))
             print(s)
+            wandb.log({"cost": cost.item()})
             with open(LOGFILE, 'a') as f:
                 f.write('%s\n' % s)
-
-        
 
     model.eval()
     with torch.set_grad_enabled(False):
@@ -385,15 +385,18 @@ with torch.set_grad_enabled(False):  # save memory during inference
                                                device=DEVICE)
     test_mae, test_mse = compute_mae_and_mse(model, test_loader,
                                              device=DEVICE)
-    
-    # LOG TO W&B
-    wandb.log({'epoch':epoch, 
-                       'train_mae':train_mae, 'train_mse':train_mse,
-                       'test_mae':test_mae, 'test_mse':test_mse})
 
     s = 'MAE/RMSE: | Train: %.2f/%.2f | Test: %.2f/%.2f' % (
         train_mae, torch.sqrt(train_mse), test_mae, torch.sqrt(test_mse))
     print(s)
+    
+    # wandb log
+    wandb.log({
+    'epoch': epoch, 
+    'train_mae': train_mae, 'train_mse': train_mse,
+    'test_mae': test_mae, 'test_mse': test_mse
+    })
+
     with open(LOGFILE, 'a') as f:
         f.write('%s\n' % s)
 
