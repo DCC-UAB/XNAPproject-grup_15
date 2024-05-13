@@ -1,7 +1,7 @@
 # coding: utf-8
 
 #############################################
-# Cross Entropy with ResNet-34
+# Cross Entropy with ResNet-34 WITH RANGE SPLIT DATASET
 #############################################
 
 # Imports
