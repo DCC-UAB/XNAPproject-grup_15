@@ -20,13 +20,16 @@ from torch.utils.data import DataLoader
 
 from torchvision import transforms
 from PIL import Image
+import wandb
+
 
 torch.backends.cudnn.deterministic = True
 
-TRAIN_CSV_PATH = './afad_train.csv'
-VALID_CSV_PATH = './afad_valid.csv'
-TEST_CSV_PATH = './afad_test.csv'
-IMAGE_PATH = '/shared_datasets/AFAD/orig/tarball/AFAD-Full'
+
+VALID_CSV_PATH =  './datasets/afad_valid.csv'
+TRAIN_CSV_PATH = './datasets/afad_train.csv'
+TEST_CSV_PATH = './datasets/afad_test.csv'
+IMAGE_PATH = 'datasets_img/AFAD/AFAD-Full'
 
 # Argparse helper
 
@@ -100,7 +103,7 @@ with open(LOGFILE, 'w') as f:
 
 # Hyperparameters
 learning_rate = 0.0005
-num_epochs = 200
+num_epochs = 15
 
 # Architecture
 NUM_CLASSES = 26
@@ -112,6 +115,19 @@ ages = df['age'].values
 del df
 ages = torch.tensor(ages, dtype=torch.float)
 
+
+wandb.init(
+    # set the wandb project where this run will be logged
+        project="afad-ce",
+        
+        # track hyperparameters and run metadata
+        config={
+            "learning_rate": learning_rate,
+            "architecture": "ordinal",
+            "dataset": "afad",
+            "epochs": num_epochs,
+            }
+    )
 
 def task_importance_weights(label_array):
     uniq = torch.unique(label_array)
@@ -392,6 +408,7 @@ for epoch in range(num_epochs):
                  % (epoch+1, num_epochs, batch_idx,
                      len(train_dataset)//BATCH_SIZE, cost))
             print(s)
+            wandb.log({"cost":cost.item()})
             with open(LOGFILE, 'a') as f:
                 f.write('%s\n' % s)
 
@@ -399,6 +416,14 @@ for epoch in range(num_epochs):
     with torch.set_grad_enabled(False):
         valid_mae, valid_mse = compute_mae_and_mse(model, valid_loader,
                                                 device=DEVICE)
+        
+        train_mae, train_mse = compute_mae_and_mse(model, train_loader,
+                                                device=DEVICE)
+        test_mae, test_mse = compute_mae_and_mse(model, test_loader,
+                                                device=DEVICE)
+        wandb.log({'epoch':epoch, 
+                       'train_mae':train_mae, 'train_mse':train_mse,
+                       'test_mae':test_mae, 'test_mse':test_mse})
 
     if valid_mae < best_mae:
         best_mae, best_rmse, best_epoch = valid_mae, torch.sqrt(valid_mse), epoch
@@ -427,6 +452,9 @@ with torch.set_grad_enabled(False):  # save memory during inference
     test_mae, test_mse = compute_mae_and_mse(model, test_loader,
                                              device=DEVICE)
 
+   
+    # jo ho tenia aqui
+
     s = 'MAE/RMSE: | Train: %.2f/%.2f | Valid: %.2f/%.2f | Test: %.2f/%.2f' % (
         train_mae, torch.sqrt(train_mse),
         valid_mae, torch.sqrt(valid_mse),
@@ -452,6 +480,10 @@ with torch.set_grad_enabled(False):
                                                device=DEVICE)
     test_mae, test_mse = compute_mae_and_mse(model, test_loader,
                                              device=DEVICE)
+
+
+
+    
 
     s = 'MAE/RMSE: | Best Train: %.2f/%.2f | Best Valid: %.2f/%.2f | Best Test: %.2f/%.2f' % (
         train_mae, torch.sqrt(train_mse),
@@ -480,3 +512,5 @@ torch.save(torch.cat(all_probas).to(torch.device('cpu')), TEST_ALLPROBAS)
 with open(TEST_PREDICTIONS, 'w') as f:
     all_pred = ','.join(all_pred)
     f.write(all_pred)
+
+wandb.finish()
