@@ -93,10 +93,10 @@ with open(LOGFILE, 'w') as f:
 
 # Hyperparameters
 learning_rate = 0.0005
-num_epochs = 200
+num_epochs = 50
 
 # Architecture
-NUM_CLASSES = 26
+NUM_CLASSES = 10   # canviat per fer afad amb dataset RANGE 0-9
 BATCH_SIZE = 256
 GRAYSCALE = False
 
@@ -171,7 +171,6 @@ def conv3x3(in_planes, out_planes, stride=1):
     """3x3 convolution with padding"""
     return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
                      padding=1, bias=False)
-
 
 class BasicBlock(nn.Module):
     expansion = 1
@@ -335,9 +334,13 @@ for epoch in range(num_epochs):
             s = ('Epoch: %03d/%03d | Batch %04d/%04d | Cost: %.4f'
                  % (epoch+1, num_epochs, batch_idx,
                      len(train_dataset)//BATCH_SIZE, cost))
+
+        # Registra las métricas en W&B
+        wandb.log({'Epoch': epoch+1, 'Batch': batch_idx, 'Train Loss': cost.item()})
             print(s)
             with open(LOGFILE, 'a') as f:
                 f.write('%s\n' % s)
+
 
     model.eval()
     with torch.set_grad_enabled(False):
@@ -368,6 +371,10 @@ with torch.set_grad_enabled(False):  # save memory during inference
                                                device=DEVICE)
     test_mae, test_mse = compute_mae_and_mse(model, test_loader,
                                              device=DEVICE)
+
+    # Registra las métricas en Weights & Biases
+    wandb.log({'Train MAE': train_mae.item(), 'Train RMSE': torch.sqrt(train_mse).item(),
+               'Test MAE': test_mae.item(), 'Test RMSE': torch.sqrt(test_mse).item()})
 
     s = 'MAE/RMSE: | Train: %.2f/%.2f | Test: %.2f/%.2f' % (
         train_mae, torch.sqrt(train_mse), test_mae, torch.sqrt(test_mse))
