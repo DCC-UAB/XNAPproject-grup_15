@@ -6,6 +6,7 @@
 
 # Imports
 
+import wandb
 import os
 import time
 import pandas as pd
@@ -23,11 +24,9 @@ from torchvision import transforms
 from PIL import Image
 
 torch.backends.cudnn.deterministic = True
-
-torch.cuda.empty_cache()
-
-TRAIN_CSV_PATH = "/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANDOM_splitted_datasets/afad_splitRANGE_train.csv"
-TEST_CSV_PATH = "/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANDOM_splitted_datasets/afad_splitRANGE_test.csv"
+print(os.getcwd(),'\n\n\n')
+TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_train.csv'
+TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_test.csv'
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
 
 
@@ -103,11 +102,20 @@ NUM_CLASSES = 10     # 10 classes per edats amb labels 0-9
 BATCH_SIZE = 256
 GRAYSCALE = False
 
+### WANDB INITIALIZATION
+# Wandb initialization
+wandb.init(
+    # set the wandb project where this run will be logged
+        project="afad-ce",
 
-###############################
-# WANDB INIT
-###############################
-
+        # track hyperparameters and run metadata
+        config={
+            "learning_rate": learning_rate,
+            "architecture": "ordinal",
+            "dataset": "afad",
+            "epochs": num_epochs,
+            }
+    )
 
 ###################
 # Dataset
@@ -341,9 +349,10 @@ for epoch in range(num_epochs):
         # LOGGING
         if not batch_idx % 50:
             s = ('Epoch: %03d/%03d | Batch %04d/%04d | Cost: %.4f'
-                 % (epoch+1, num_epochs, batch_idx,
-                     len(train_dataset)//BATCH_SIZE, cost))
+                % (epoch+1, num_epochs, batch_idx,
+                    len(train_dataset)//BATCH_SIZE, cost))
             print(s)
+            wandb.log({"cost": cost.item()})
             with open(LOGFILE, 'a') as f:
                 f.write('%s\n' % s)
 
@@ -380,6 +389,14 @@ with torch.set_grad_enabled(False):  # save memory during inference
     s = 'MAE/RMSE: | Train: %.2f/%.2f | Test: %.2f/%.2f' % (
         train_mae, torch.sqrt(train_mse), test_mae, torch.sqrt(test_mse))
     print(s)
+    
+    # wandb log
+    wandb.log({
+    'epoch': epoch, 
+    'train_mae': train_mae, 'train_mse': train_mse,
+    'test_mae': test_mae, 'test_mse': test_mse
+    })
+
     with open(LOGFILE, 'a') as f:
         f.write('%s\n' % s)
 
@@ -411,3 +428,5 @@ with torch.set_grad_enabled(False):
 with open(TEST_PREDICTIONS, 'w') as f:
     all_pred = ','.join(all_pred)
     f.write(all_pred)
+
+wandb.finish()
