@@ -103,7 +103,7 @@ with open(LOGFILE, 'w') as f:
 
 # Hyperparameters
 learning_rate = 0.0005
-num_epochs = 15
+num_epochs = 45
 
 # Architecture
 NUM_CLASSES = 26
@@ -116,10 +116,12 @@ del df
 ages = torch.tensor(ages, dtype=torch.float)
 
 
+# Wandb initialization
 wandb.init(
     # set the wandb project where this run will be logged
-        project="afad-ce",
-        
+        entity='xisca',
+        project="projecte-deep",
+        name = 'range',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,

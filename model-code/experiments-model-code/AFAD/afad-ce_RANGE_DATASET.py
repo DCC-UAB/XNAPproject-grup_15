@@ -94,7 +94,7 @@ with open(LOGFILE, 'w') as f:
 
 # Hyperparameters
 learning_rate = 0.0005
-num_epochs = 25
+num_epochs = 45
 
 # Architecture
 NUM_CLASSES = 10     # 10 classes per edats amb labels 0-9
@@ -108,16 +108,17 @@ wandb.login(key='a14c6a2ec25620e6e2047f787c8dbe5d7710eaef')
 # Wandb initialization
 wandb.init(
     # set the wandb project where this run will be logged
-        project="afad-ce",
+        project="afad-coral",
         name = 'range',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
-            "architecture": "ordinal",
+            "architecture": "ce",
             "dataset": "afad",
             "epochs": num_epochs,
             }
     )
+
 
 ###################
 # Dataset
