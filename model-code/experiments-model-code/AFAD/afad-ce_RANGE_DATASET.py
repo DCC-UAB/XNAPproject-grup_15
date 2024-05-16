@@ -29,7 +29,6 @@ TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_split
 TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_test.csv'
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
 
-
 # Argparse helper
 
 parser = argparse.ArgumentParser()
@@ -103,11 +102,14 @@ BATCH_SIZE = 256
 GRAYSCALE = False
 
 ### WANDB INITIALIZATION
+
+wandb.login(key='a14c6a2ec25620e6e2047f787c8dbe5d7710eaef')
+
 # Wandb initialization
 wandb.init(
     # set the wandb project where this run will be logged
         project="afad-ce",
-
+        name = 'range',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
@@ -352,14 +354,24 @@ for epoch in range(num_epochs):
                 % (epoch+1, num_epochs, batch_idx,
                     len(train_dataset)//BATCH_SIZE, cost))
             print(s)
-            wandb.log({"cost": cost.item()})
             with open(LOGFILE, 'a') as f:
                 f.write('%s\n' % s)
+            wandb.log({"cost":cost.item()})
 
     model.eval()
     with torch.set_grad_enabled(False):
         test_mae, test_mse = compute_mae_and_mse(model, test_loader,
                                                 device=DEVICE)
+        
+        train_mae, train_mse = compute_mae_and_mse(model, train_loader,
+                                                device=DEVICE)
+        
+        # wandb log
+        wandb.log({
+        'epoch': epoch, 
+        'train_mae': train_mae, 'train_mse': train_mse,
+        'test_mae': test_mae, 'test_mse': test_mse
+        })
 
     if test_mae < best_mae:
         best_mae, best_rmse, best_epoch = test_mae, torch.sqrt(test_mse), epoch
@@ -389,13 +401,6 @@ with torch.set_grad_enabled(False):  # save memory during inference
     s = 'MAE/RMSE: | Train: %.2f/%.2f | Test: %.2f/%.2f' % (
         train_mae, torch.sqrt(train_mse), test_mae, torch.sqrt(test_mse))
     print(s)
-    
-    # wandb log
-    wandb.log({
-    'epoch': epoch, 
-    'train_mae': train_mae, 'train_mse': train_mse,
-    'test_mae': test_mae, 'test_mse': test_mse
-    })
 
     with open(LOGFILE, 'a') as f:
         f.write('%s\n' % s)
