@@ -220,102 +220,6 @@ class BasicBlock(nn.Module):
         return out
 
 
-class ResNet(nn.Module):
-
-    def __init__(self, block, layers, num_classes, grayscale):
-        self.inplanes = 64
-        if grayscale:
-            in_dim = 1
-        else:
-            in_dim = 3
-        super(ResNet, self).__init__()
-        self.conv1 = nn.Conv2d(in_dim, 64, kernel_size=7, stride=2, padding=3,
-                               bias=False)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.relu = nn.ReLU(inplace=True)
-        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        self.layer1 = self._make_layer(block, 64, layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
-        self.avgpool = nn.AvgPool2d(4)
-        self.fc = nn.Linear(512, num_classes)
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, (2. / n)**.5)
-            elif isinstance(m, nn.BatchNorm2d):
-                m.weight.data.fill_(1)
-                m.bias.data.zero_()
-
-    def _make_layer(self, block, planes, blocks, stride=1):
-        downsample = None
-        if stride != 1 or self.inplanes != planes * block.expansion:
-            downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes, planes * block.expansion,
-                          kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(planes * block.expansion),
-            )
-
-        layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample))
-        self.inplanes = planes * block.expansion
-        for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
-
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
-
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
-        x = self.avgpool(x)
-
-        x = x.view(x.size(0), -1)
-        logits = self.fc(x)
-        probas = F.softmax(logits, dim=1)
-        return logits, probas
-
-
-def resnet34(num_classes, grayscale):
-    """Constructs a ResNet-34 model."""
-    model = ResNet(block=BasicBlock, 
-                   layers=[3, 4, 6, 3],
-                   num_classes=num_classes,
-                   grayscale=grayscale)
-    return model
-
-def resnet18(num_classes, grayscale):
-    """Constructs a ResNet-18 model."""
-    model = ResNet(block=BasicBlock, 
-                   layers=[2,2,2,2],
-                   num_classes=num_classes,
-                   grayscale=grayscale)
-    return model
-
-
-class FireModule(nn.Module):
-    def __init__(self, in_channels, s1x1, e1x1, e3x3):
-        super(FireModule, self).__init__()
-        self.squeeze = nn.Conv2d(in_channels=in_channels, out_channels=s1x1, kernel_size=1, stride=1)
-        self.expand1x1 = nn.Conv2d(in_channels=s1x1, out_channels=e1x1, kernel_size=1)
-        self.expand3x3 = nn.Conv2d(in_channels=s1x1, out_channels=e3x3, kernel_size=3, padding=1)
-        
-    def forward(self, x):
-        x = F.relu(self.squeeze(x))
-        x1 = self.expand1x1(x)
-        x2 = self.expand3x3(x)
-        x = F.relu(torch.cat((x1, x2), dim=1))
-        return x
-    
-
 class SqueezeNet(nn.Module):
     def __init__(self, out_channels):
         super(SqueezeNet, self).__init__()
@@ -361,7 +265,7 @@ def Squeezenet(num_classes):
 
 torch.manual_seed(RANDOM_SEED)
 torch.cuda.manual_seed(RANDOM_SEED)
-model = resnet18(NUM_CLASSES, GRAYSCALE)
+model = Squeezenet(NUM_CLASSES, GRAYSCALE)
 
 model.to(DEVICE)
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) 
