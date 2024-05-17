@@ -8,18 +8,12 @@
 
 **Objectiu:** Funciona igual de bé el model amb edats separedes (15,20,25,...) que amb edat juntes (15,16,17,18).
 
-## 3. Biaixos Potencials:
+## 3. Altres mètriques:
 
-**Objectiu:** Identificar possibles biaixos en els conjunts de dades que podrien afectar la precisió i l'objectivitat del model.
+**Objectiu:** Utilitzem MAE i MSE com a mètriques per veure el rendiment però estaria bé afegir d'altres .
 
-· Hi ha algun biaix evident en les dades (per exemple, més dades d'un grup d'edat específic, predominança d'un gènere)?
+· R2 -> Aquesta mètrica indica quina proporció de la variància en la variable dependent (en aquest cas, l'edat) és explicada pel model. Un R² més alt significa que el model explica millor la variància de les dades. Interesant per datasets amb ampli rang d'edats
 
-· Com podrien aquests biaixos afectar el rendiment del model a l'hora de predir l'edat en dades noves?
+· MAPE -> És robust a valors atípics i proporciona la mediana de l'error absolut. Això significa que és més resistent als valors extrems comparat amb altres mètriques.
 
-## 4. Soroll en les Imatges:
 
-**Objectiu:** Detectar fonts de soroll que puguin afectar el rendiment del model i portar a sobreajustament o infraajustament.
-
-· Les imatges presenten soroll visual, com ara marques d'aigua, ombres, il·luminació inconsistent o fons desordenats?
-
-· En cas que hi hagi soroll, com es podria afectar el rendiment del model? Podria conduir a sobreajustament si el model aprèn a detectar elements irrellevants? O podria conduir a underfitting si el soroll dificulta l'aprenentatge de les característiques clau?
