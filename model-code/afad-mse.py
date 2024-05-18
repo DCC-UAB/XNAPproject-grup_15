@@ -25,8 +25,8 @@ import wandb
 
 torch.backends.cudnn.deterministic = True
 print(os.getcwd(),'\n\n\n')
-TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_splitRANGE_train.csv'
-TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_splitRANGE_test.csv'
+TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/datasets/afad_train.csv'
+TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/datasets/afad_test.csv'
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
 
 
@@ -111,7 +111,7 @@ wandb.init(
     # set the wandb project where this run will be logged
         entity='xisca',
         project="projecte-deep",
-        name = 'afad-mse range',
+        name = 'afad-mse full',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
@@ -335,11 +335,11 @@ with torch.set_grad_enabled(False):  # save memory during inference
                                              device=DEVICE)
 
     # Registra las métricas en Weights & Biases
-    wandb.log({'Train MAE': train_mae.item(), 'Train RMSE': torch.sqrt(train_mse).item(),
-               'Test MAE': test_mae.item(), 'Test RMSE': (test_mse)**0.5.item()})
+    wandb.log({'Train MAE': train_mae, 'Train RMSE': train_mse,
+               'Test MAE': test_mae, 'Test RMSE': (test_mse)**0.5})
 
     s = 'MAE/RMSE: | Train: %.2f/%.2f | Test: %.2f/%.2f' % (
-        train_mae, torch.sqrt(train_mse), test_mae, (test_mse)**0.5)
+        train_mae, (train_mse)**0.5, test_mae, (test_mse)**0.5)
     print(s)
     with open(LOGFILE, 'a') as f:
         f.write('%s\n' % s)
