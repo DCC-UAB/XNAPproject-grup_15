@@ -25,8 +25,8 @@ import wandb
 
 torch.backends.cudnn.deterministic = True
 print(os.getcwd(),'\n\n\n')
-TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_splitRANGE_test.csv'
-TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_splitRANGE_train.csv'
+TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset/afad_train.csv'
+TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset/afad_test.csv'
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
 
 # Wandb initialization
@@ -97,32 +97,12 @@ with open(LOGFILE, 'w') as f:
 
 # Hyperparameters
 learning_rate = 0.0005
-num_epochs = 45
+num_epochs = 50
 
 # Architecture
 NUM_CLASSES = 10   # canviat per fer afad amb dataset RANGE 0-9
 BATCH_SIZE = 256
 GRAYSCALE = False
-
-### WANDB INITIALIZATION
-
-wandb.login(key='a14c6a2ec25620e6e2047f787c8dbe5d7710eaef')
-
-# Wandb initialization
-wandb.init(
-    # set the wandb project where this run will be logged
-        entity='xisca',
-        project="projecte-deep",
-        name = 'range',
-        # track hyperparameters and run metadata
-        config={
-            "learning_rate": learning_rate,
-            "architecture": "ordinal",
-            "dataset": "afad",
-            "epochs": num_epochs,
-            }
-    )
-
 
 ###################
 # Dataset
