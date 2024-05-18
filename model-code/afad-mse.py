@@ -190,7 +190,7 @@ assert torch.cuda.is_available(), "GPU is not enabled"
 
 # FUNCIÓ PER INIT RESNET34 PRETRAINED
 def init_resnet34(num_classes, grayscale):
-    model = models.resnet34(pretrained=True)
+    model = models.resnet34(weights='IMAGENET1K_V1')
     
     if grayscale:
         # Modifiquem 1a capa per acceptar grayscale (1 channel)
