@@ -98,7 +98,7 @@ learning_rate = 0.0005
 num_epochs = 45
 
 # Architecture
-NUM_CLASSES = 10   # canviat per fer afad amb dataset RANGE 0-9
+NUM_CLASSES = 26   # canviat per fer afad amb dataset RANGE 0-9
 BATCH_SIZE = 256
 GRAYSCALE = False
 
