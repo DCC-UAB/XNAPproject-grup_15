@@ -25,8 +25,8 @@ from PIL import Image
 
 torch.backends.cudnn.deterministic = True
 print(os.getcwd(),'\n\n\n')
-TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_train.csv'
-TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_split09_test.csv'
+TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_splitRANGE_train.csv'
+TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_splitRANGE_test.csv'
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
 
 # Argparse helper
@@ -103,17 +103,21 @@ GRAYSCALE = False
 
 ### WANDB INITIALIZATION
 
+### WANDB INITIALIZATION
+
 wandb.login(key='a14c6a2ec25620e6e2047f787c8dbe5d7710eaef')
 
 # Wandb initialization
 wandb.init(
     # set the wandb project where this run will be logged
-        project="afad-coral",
+        entity='xisca',
+        project="projecte-deep",
         name = 'range',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
-            "architecture": "ce",
+            "architecture": "MSE",
+            "model": "ce",
             "dataset": "afad",
             "epochs": num_epochs,
             }
@@ -341,6 +345,9 @@ for epoch in range(num_epochs):
 
         # FORWARD AND BACK PROP
         logits, probas = model(features)
+        print(logits.size())
+        print(targets.size())
+        time.sleep(2)
         cost = F.cross_entropy(logits, targets)
         optimizer.zero_grad()
 

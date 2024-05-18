@@ -111,7 +111,7 @@ wandb.init(
     # set the wandb project where this run will be logged
         entity='xisca',
         project="projecte-deep",
-        name = 'range',
+        name = 'afad-mse range',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
@@ -188,118 +188,6 @@ assert torch.cuda.is_available(), "GPU is not enabled"
 # MODEL
 ##########################
 
-
-def conv3x3(in_planes, out_planes, stride=1):
-    """3x3 convolution with padding"""
-    return nn.Conv2d(in_planes, out_planes, kernel_size=3, stride=stride,
-                     padding=1, bias=False)
-
-class BasicBlock(nn.Module):
-    expansion = 1
-
-    def __init__(self, inplanes, planes, stride=1, downsample=None):
-        super(BasicBlock, self).__init__()
-        self.conv1 = conv3x3(inplanes, planes, stride)
-        self.bn1 = nn.BatchNorm2d(planes)
-        self.relu = nn.ReLU(inplace=True)
-        self.conv2 = conv3x3(planes, planes)
-        self.bn2 = nn.BatchNorm2d(planes)
-        self.downsample = downsample
-        self.stride = stride
-
-    def forward(self, x):
-        residual = x
-
-        out = self.conv1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-
-        out = self.conv2(out)
-        out = self.bn2(out)
-
-        if self.downsample is not None:
-            residual = self.downsample(x)
-
-        out += residual
-        out = self.relu(out)
-
-        return out
-
-
-class ResNet(nn.Module):
-
-    def __init__(self, block, layers, num_classes, grayscale):
-        self.inplanes = 64
-        if grayscale:
-            in_dim = 1
-        else:
-            in_dim = 3
-        super(ResNet, self).__init__()
-        self.conv1 = nn.Conv2d(in_dim, 64, kernel_size=7, stride=2, padding=3,
-                               bias=False)
-        self.bn1 = nn.BatchNorm2d(64)
-        self.relu = nn.ReLU(inplace=True)
-        self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
-        self.layer1 = self._make_layer(block, 64, layers[0])
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
-        self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
-        self.avgpool = nn.AvgPool2d(4)
-        self.fc = nn.Linear(512, num_classes)
-
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, (2. / n)**.5)
-            elif isinstance(m, nn.BatchNorm2d):
-                m.weight.data.fill_(1)
-                m.bias.data.zero_()
-
-    def _make_layer(self, block, planes, blocks, stride=1):
-        downsample = None
-        if stride != 1 or self.inplanes != planes * block.expansion:
-            downsample = nn.Sequential(
-                nn.Conv2d(self.inplanes, planes * block.expansion,
-                          kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(planes * block.expansion),
-            )
-
-        layers = []
-        layers.append(block(self.inplanes, planes, stride, downsample))
-        self.inplanes = planes * block.expansion
-        for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes))
-
-        return nn.Sequential(*layers)
-
-    def forward(self, x):
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
-
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
-        x = self.avgpool(x)
-
-        x = x.view(x.size(0), -1)
-        logits = self.fc(x)
-        probas = F.softmax(logits, dim=1)
-        return logits, probas
-
-
-def resnet34(num_classes, grayscale):
-    """Constructs a ResNet-34 model."""
-    model = ResNet(block=BasicBlock, 
-                   layers=[3, 4, 6, 3],
-                   num_classes=num_classes,
-                   grayscale=grayscale)
-
-    return model
-
-
 # FUNCIÓ PER INIT RESNET34 PRETRAINED
 def init_resnet34(num_classes, grayscale):
     model = models.resnet34(pretrained=True)
@@ -313,7 +201,7 @@ def init_resnet34(num_classes, grayscale):
     
     # Modificar la última capa para el número de clases especificado
     num_ftrs = model.fc.in_features
-    model.fc = nn.Linear(num_ftrs, num_classes)
+    model.fc = nn.Linear(num_ftrs, 1)
 
     return model
 
@@ -330,23 +218,44 @@ model = init_resnet34(NUM_CLASSES,GRAYSCALE)
 model.to(DEVICE)
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) 
 
+# def compute_mae_and_mse(model, data_loader, device):
+#     mae, mse, num_examples = 0., 0., 0
+#     for i, (features, targets) in enumerate(data_loader):
+            
+#         features = features.to(device)
+#         targets = targets.to(device)
 
+#         logits, probas = model(features)
+#         _, predicted_labels = torch.max(probas, 1)
+#         num_examples += targets.size(0)
+#         mae += torch.sum(torch.abs(predicted_labels - targets))
+#         mse += torch.sum((predicted_labels - targets)**2)
+    
+#     mae = mae.float()/num_examples
+#     mse = mse.float()/num_examples
+       
+#     return mae, mse
+
+# Calcul de mètrica
 def compute_mae_and_mse(model, data_loader, device):
+    mae_loss = nn.L1Loss()
+    mse_loss = nn.MSELoss()
+
     mae, mse, num_examples = 0., 0., 0
     for i, (features, targets) in enumerate(data_loader):
-            
         features = features.to(device)
-        targets = targets.to(device)
+        targets = targets.to(device).float()  # Asegúrate de que las etiquetas sean flotantes
 
-        logits, probas = model(features)
-        _, predicted_labels = torch.max(probas, 1)
+        logits = model(features).squeeze()
         num_examples += targets.size(0)
-        mae += torch.sum(torch.abs(predicted_labels - targets))
-        mse += torch.sum((predicted_labels - targets)**2)
-    
-    mae = mae.float()/num_examples
-    mse = mse.float()/num_examples
-       
+        
+        # Calcula el MAE y el MSE utilizando las etiquetas y las predicciones directamente
+        mae += mae_loss(logits, targets).item() * features.size(0)
+        mse += mse_loss(logits, targets).item() * features.size(0)
+
+    mae = mae/num_examples
+    mse = mse/num_examples
+
     return mae, mse
 
 
@@ -360,10 +269,11 @@ for epoch in range(num_epochs):
 
         features = features.to(DEVICE)
         targets = targets.to(DEVICE)
+        targets = targets.float()
 
         # FORWARD AND BACK PROP
-        logits = model(features)
-        cost = F.mse_loss(logits, targets)
+        logits = model(features).squeeze()
+        cost = F.mse_loss(logits,targets)
         optimizer.zero_grad()
 
         cost.backward()
@@ -388,15 +298,25 @@ for epoch in range(num_epochs):
     with torch.set_grad_enabled(False):
         test_mae, test_mse = compute_mae_and_mse(model, test_loader,
                                                 device=DEVICE)
+        
+        train_mae, train_mse = compute_mae_and_mse(model, train_loader,
+                                                device=DEVICE)
+        
+        # wandb log
+        wandb.log({
+        'epoch': epoch, 
+        'train_mae': train_mae, 'train_mse': train_mse,
+        'test_mae': test_mae, 'test_mse': test_mse
+        })
 
     if test_mae < best_mae:
-        best_mae, best_rmse, best_epoch = test_mae, torch.sqrt(test_mse), epoch
+        best_mae, best_rmse, best_epoch = test_mae, (test_mse)**0.5, epoch
         ########## SAVE MODEL #############
-        torch.save(model.state_dict(), os.path.join(PATH, 'best_model.pt'))
+        # torch.save(model.state_dict(), os.path.join(PATH, 'best_model.pt'))
 
 
     s = 'MAE/RMSE: | Current Test: %.2f/%.2f Ep. %d | Best Test : %.2f/%.2f Ep. %d' % (
-        test_mae, torch.sqrt(test_mse), epoch, best_mae, best_rmse, best_epoch)
+        test_mae, (test_mse)**0.5, epoch, best_mae, best_rmse, best_epoch)
     print(s)
     with open(LOGFILE, 'a') as f:
         f.write('%s\n' % s)
@@ -416,10 +336,10 @@ with torch.set_grad_enabled(False):  # save memory during inference
 
     # Registra las métricas en Weights & Biases
     wandb.log({'Train MAE': train_mae.item(), 'Train RMSE': torch.sqrt(train_mse).item(),
-               'Test MAE': test_mae.item(), 'Test RMSE': torch.sqrt(test_mse).item()})
+               'Test MAE': test_mae.item(), 'Test RMSE': (test_mse)**0.5.item()})
 
     s = 'MAE/RMSE: | Train: %.2f/%.2f | Test: %.2f/%.2f' % (
-        train_mae, torch.sqrt(train_mse), test_mae, torch.sqrt(test_mse))
+        train_mae, torch.sqrt(train_mse), test_mae, (test_mse)**0.5)
     print(s)
     with open(LOGFILE, 'a') as f:
         f.write('%s\n' % s)
@@ -433,6 +353,8 @@ s = 'Best MAE: %.2f | Best RMSE: %.2f | Best Epoch: %d' % (best_mae, best_rmse, 
 print(s)
 with open(LOGFILE, 'a') as f:
     f.write('%s\n' % s)
+
+wandb.finish()
 
 # ########## SAVE PREDICTIONS ######
 
