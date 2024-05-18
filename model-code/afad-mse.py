@@ -25,12 +25,10 @@ import wandb
 
 torch.backends.cudnn.deterministic = True
 print(os.getcwd(),'\n\n\n')
-TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset/afad_train.csv'
-TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset/afad_test.csv'
+TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_splitRANGE_train.csv'
+TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/dataset_split/RANGE_splitted_datasets/afad_splitRANGE_test.csv'
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
 
-# Wandb initialization
-wandb.init(project='afad-ce', entity='xnmaster')
 
 # Argparse helper
 parser = argparse.ArgumentParser()
@@ -97,12 +95,32 @@ with open(LOGFILE, 'w') as f:
 
 # Hyperparameters
 learning_rate = 0.0005
-num_epochs = 50
+num_epochs = 45
 
 # Architecture
 NUM_CLASSES = 10   # canviat per fer afad amb dataset RANGE 0-9
 BATCH_SIZE = 256
 GRAYSCALE = False
+
+### WANDB INITIALIZATION
+
+wandb.login(key='a14c6a2ec25620e6e2047f787c8dbe5d7710eaef')
+
+# Wandb initialization
+wandb.init(
+    # set the wandb project where this run will be logged
+        entity='xisca',
+        project="projecte-deep",
+        name = 'range',
+        # track hyperparameters and run metadata
+        config={
+            "learning_rate": learning_rate,
+            "architecture": "MSE",
+            "model": "resnet34-pretrained",
+            "dataset": "afad",
+            "epochs": num_epochs,
+            }
+    )
 
 ###################
 # Dataset
@@ -278,7 +296,24 @@ def resnet34(num_classes, grayscale):
                    layers=[3, 4, 6, 3],
                    num_classes=num_classes,
                    grayscale=grayscale)
-    model=models.resnet34(pretrained=True)
+
+    return model
+
+
+# FUNCIÓ PER INIT RESNET34 PRETRAINED
+def init_resnet34(num_classes, grayscale):
+    model = models.resnet34(pretrained=True)
+    
+    if grayscale:
+        # Modifiquem 1a capa per acceptar grayscale (1 channel)
+        model.conv1 = nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3, bias=False)
+    else:
+        # Modifiquem 1a capa per acceptar RGB (3 channel)
+        model.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False)
+    
+    # Modificar la última capa para el número de clases especificado
+    num_ftrs = model.fc.in_features
+    model.fc = nn.Linear(num_ftrs, num_classes)
 
     return model
 
@@ -289,7 +324,8 @@ def resnet34(num_classes, grayscale):
 
 torch.manual_seed(RANDOM_SEED)
 torch.cuda.manual_seed(RANDOM_SEED)
-model = resnet34(NUM_CLASSES, GRAYSCALE)
+# model = resnet34(NUM_CLASSES, GRAYSCALE)
+model = init_resnet34(NUM_CLASSES,GRAYSCALE)
 
 model.to(DEVICE)
 optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate) 
@@ -326,7 +362,7 @@ for epoch in range(num_epochs):
         targets = targets.to(DEVICE)
 
         # FORWARD AND BACK PROP
-        logits, probas = model(features)
+        logits = model(features)
         cost = F.mse_loss(logits, targets)
         optimizer.zero_grad()
 
@@ -398,21 +434,21 @@ print(s)
 with open(LOGFILE, 'a') as f:
     f.write('%s\n' % s)
 
-########## SAVE PREDICTIONS ######
+# ########## SAVE PREDICTIONS ######
 
-model.load_state_dict(torch.load(os.path.join(PATH, 'best_model.pt')))
-model.eval()
-all_pred = []
-with torch.set_grad_enabled(False):
-    for batch_idx, (features, targets) in enumerate(test_loader):
+# model.load_state_dict(torch.load(os.path.join(PATH, 'best_model.pt')))
+# model.eval()
+# all_pred = []
+# with torch.set_grad_enabled(False):
+#     for batch_idx, (features, targets) in enumerate(test_loader):
         
-        features = features.to(DEVICE)
-        logits, probas = model(features)
-        predict_levels = probas > 0.5
-        predicted_labels = torch.sum(predict_levels, dim=1)
-        lst = [str(int(i)) for i in predicted_labels]
-        all_pred.extend(lst)
+#         features = features.to(DEVICE)
+#         logits, probas = model(features)
+#         predict_levels = probas > 0.5
+#         predicted_labels = torch.sum(predict_levels, dim=1)
+#         lst = [str(int(i)) for i in predicted_labels]
+#         all_pred.extend(lst)
 
-with open(TEST_PREDICTIONS, 'w') as f:
-    all_pred = ','.join(all_pred)
-    f.write(all_pred)
+# with open(TEST_PREDICTIONS, 'w') as f:
+#     all_pred = ','.join(all_pred)
+#     f.write(all_pred)
