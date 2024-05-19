@@ -2,9 +2,7 @@
 
 ## 1. Provar diferents arquitectures:
 
-**Objectiu:** 
-
-Provar diverses arquitectures per determinar quina ofereix els millors resultats en termes de rendiment i precisió.
+**Objectiu:** Provar diverses arquitectures per determinar quina ofereix els millors resultats en termes de rendiment i precisió.
 
 · Realitzar un anàlisi exhaustiu dels resultats obtinguts de cadascuna de les arquitectures provades.
 
