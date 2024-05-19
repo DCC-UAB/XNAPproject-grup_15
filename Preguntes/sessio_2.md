@@ -12,11 +12,11 @@
 
 **Objectiu:** El model presenta un sobreajustament molt clar, primer de tot haurem de reduir-lo.
 
-· El starting point no utilitza una arquitectura preentrenada -> Això provoca una fàcil memorització de les imatges i per tant pot ser la causa del sobreajustament.
+· El starting point no utilitza una arquitectura preentrenada -> Això provoca una fàcil memorització de les imatges i per tant pot ser la causa del Overfitting.
 
-· El dataset original presenta una mala distribució en els conjunts d'entrenament, test i validació. Realitzar una nova distribució 70% 30% entre entrenament i test per intentar solucionar el sobreajustament.
+· El dataset original presenta una mala distribució en els conjunts d'entrenament, test i validació. Realitzar una nova distribució 70% 30% entre entrenament i test per intentar solucionar el Overfitting.
 
-· Si l'anterior no funciona es pot provar a realitzar un data augmentation, una extracció de característiques congelant blocs o altres mètodes per reduir el sobreajustament.
+· Si l'anterior no funciona es pot provar a realitzar un data augmentation, una extracció de característiques congelant blocs o altres mètodes per reduir el Overfitting.
 
 ## 4. Noves mètriques
 
