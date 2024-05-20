@@ -15,6 +15,7 @@ import torch.nn.functional as F
 import argparse
 import sys
 import torchvision.models as models
+from torchvision import transforms
 
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
@@ -126,7 +127,7 @@ wandb.init(
 # Dataset
 ###################
 
-
+# DATASET IMAGE LOADER
 class AFADDatasetAge(Dataset):
     """Custom Dataset for loading AFAD face images"""
 
@@ -152,12 +153,37 @@ class AFADDatasetAge(Dataset):
 
     def __len__(self):
         return self.y.shape[0]
+    
+# DATA AUMENTATION
+augmentation_transforms = transforms.Compose([
+        # Flipping and Rotating
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomRotation(degrees=(-15, 15)),
+        
+        # Cropping and Resizing
+        transforms.RandomResizedCrop(size=(120, 120), scale=(0.8, 1.0)),
+        
+        # Color Jittering
+        transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+        
+        # Adding Noise
+        transforms.Lambda(lambda x: x + torch.randn_like(x) * 0.05),
+        
+        # Random Erasing
+        transforms.RandomErasing(p=0.5, scale=(0.02, 0.33), ratio=(0.3, 3.3))  # Borrado aleatorio de regiones de la imagen
+    ])
+
 
 
 custom_transform = transforms.Compose([transforms.Resize((128, 128)),
                                        transforms.RandomCrop((120, 120)),
                                        transforms.ToTensor()])
 
+# train_dataset = AFADDatasetAge(csv_path=TRAIN_CSV_PATH,
+#                                img_dir=IMAGE_PATH,
+#                                transform=custom_transform)
+
+# train amb DA
 train_dataset = AFADDatasetAge(csv_path=TRAIN_CSV_PATH,
                                img_dir=IMAGE_PATH,
                                transform=custom_transform)
@@ -169,7 +195,7 @@ custom_transform2 = transforms.Compose([transforms.Resize((128, 128)),
 
 test_dataset = AFADDatasetAge(csv_path=TEST_CSV_PATH,
                               img_dir=IMAGE_PATH,
-                              transform=custom_transform2)
+                              transform=augmentation_transforms)
 
 
 train_loader = DataLoader(dataset=train_dataset,
