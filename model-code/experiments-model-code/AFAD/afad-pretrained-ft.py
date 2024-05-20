@@ -1,3 +1,4 @@
+
 import os
 import time
 import pandas as pd
@@ -102,12 +103,12 @@ wandb.init(
     # set the wandb project where this run will be logged
         entity='xisca',
         project="projecte-deep",
-        name = 'afad-mse-noves-metriques-resnet38  Range',
+        name = 'afad- fe bloc i fc',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
             "architecture": "MSE",
-            "model": "resnet34-pretrained",
+            "model": "resnet34-pretrained - fe",
             "dataset": "afad",
             "epochs": num_epochs,
             }
@@ -182,12 +183,12 @@ assert torch.cuda.is_available(), "GPU is not enabled"
 
 def set_parameter_requires_grad(model, feature_extracting):
     if feature_extracting:
-        for param in model.parameters():
+        for param in list(model.parameters())[:-2]: # modificar això depenent de lo q vols descongelar
             param.requires_grad = False
 
 # FUNCIÓ PER INIT RESNET34 PRETRAINED
 def init_resnet34(num_classes, grayscale):
-    model = models.resnet18(weights='IMAGENET1K_V1')
+    model = models.resnet34(weights='IMAGENET1K_V1')
     set_parameter_requires_grad(model, True)
     if grayscale:
         # Modifiquem 1a capa per acceptar grayscale (1 channel)
@@ -213,9 +214,13 @@ torch.cuda.manual_seed(RANDOM_SEED)
 model = init_resnet34(NUM_CLASSES, GRAYSCALE)
 model.to(DEVICE)
 params_to_update = []
-for name,param in model.named_parameters():
+len_model =len(list(model.named_parameters()))
+i=0
+for name,param in (model.named_parameters()):
     if param.requires_grad == True:
         params_to_update.append(param)
+
+
 # Initialize the optimizer
 optimizer = torch.optim.Adam(params_to_update, lr=learning_rate)
 
