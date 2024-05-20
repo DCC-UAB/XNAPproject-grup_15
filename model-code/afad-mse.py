@@ -26,8 +26,8 @@ import wandb
 
 torch.backends.cudnn.deterministic = True
 print(os.getcwd(),'\n\n\n')
-TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/datasets/afad_train.csv'
-TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/datasets/afad_test.csv'
+TRAIN_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/datasets/afad-propi-train.csv'
+TEST_CSV_PATH = '/home/xnmaster/XNAPproject-grup_15-1/datasets/afad-propi-test.csv'
 IMAGE_PATH = '/home/xnmaster/projecte_SP/coral-cnn-master/dataset_img/dataset2/AFAD-Full'
 
 
@@ -112,7 +112,7 @@ wandb.init(
     # set the wandb project where this run will be logged
         entity='xisca',
         project="projecte-deep",
-        name = 'afad-mse full',
+        name = 'afad-mse propi DA1',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
