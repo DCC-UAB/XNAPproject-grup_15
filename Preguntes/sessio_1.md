@@ -16,6 +16,8 @@
 
 · Provar amb un dataset que agafi aleatòriament el nombre d'exemples de cada edat, tenint en compte que segueixin una mateixa distribució.
 
+· Provar amb un dataser que agafi edats concretes cada certs anys. (per exemple: 20, 25, 30, 35, 40 ...) cada 5 anys.
+
 ## 3. Classificador com a Loss?
 
 **Objectiu:** Els starting points utilitzen un classificador per calcular la loss. Això no concorda amb el nostre objectiu ja que només mira si s'ha classificat bé o no. Nosaltres volem aproximar-nos a l'edat el màxim possible, per tant, necessitem una regressió o un nou mètode per calcular la loss.
