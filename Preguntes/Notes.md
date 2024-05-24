@@ -27,12 +27,11 @@ COSES A FER:
 ## Sessio 3
 
 Noves tasques:
-- Mirar quina resnet es millor (tot congelat)
-- Afegir una capa intermadia de neurona
-- Prentrenar amb el model prentrenat (utilitzar anterior model en comptes de resnet)
-- Entrenar i testesjar amb diferents models (utilitzar la mateixa arquitectura)
-
-
-Afegir:
-- Batch norm
-- Drop out
+.........
+- 1. Dataset original vs Dataset Split propi (tot congelat)
+- 2. Mirar arquitectures millor (tot congelat)
+- 3. Afegir capes intermitjes a FC (Batchnorm, dropout...)
+- 4. Prentrenar amb el model prentrenat (primer tot congelat per pretrain de mes descongelar) = Domain Adaptation
+........
+- 5. Provar DA al dataloader
+- 6. LR policies (cos)
