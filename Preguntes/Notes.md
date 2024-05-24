@@ -1,3 +1,5 @@
+# NOTES
+
 4 Corves  (Evolució) 
 - Metric Train
 - Metric Test
@@ -22,8 +24,13 @@ COSES A FER:
     - Canviar Resnet
     - canviar el model en si...
 
+## Sessio 3
 
 Noves tasques:
 - Mirar quina resnet es millor (tot congelat)
 - Afegir una capa intermadia de neurona
-- 
+
+
+Afegir:
+- Batch norm
+- Drop out
