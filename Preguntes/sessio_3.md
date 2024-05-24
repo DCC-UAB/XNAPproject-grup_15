@@ -18,6 +18,8 @@
 
 · Entrenar: dataset AFAD -> Test: dataset CACD
 
+· Utilitzar la nova distribució que vam fer a la sessó anterior (70% - 30%)
+
 
 
 ## 3. Probar a entrenar amb el model CACD i testejar amb el model AFAD.
@@ -25,4 +27,7 @@
 **OBJECTIU:** Fer les comparacions al igual que el punt anterior per a comprobar quins resultats són millors de testig i poder analitzar quins model entrena millor. 
 
 · Entrenar: dataset CACD -> Test: dataset AFAD
+
+· Utilitzar la nova distribució que vam fer a la sessó anterior (70% - 30%)
+
 
