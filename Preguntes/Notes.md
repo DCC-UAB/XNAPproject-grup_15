@@ -21,3 +21,9 @@ COSES A FER:
     - Squezee
     - Canviar Resnet
     - canviar el model en si...
+
+
+Noves tasques:
+- Mirar quina resnet es millor (tot congelat)
+- Afegir una capa intermadia de neurona
+- 
