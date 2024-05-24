@@ -16,9 +16,13 @@
 
 **OBJECTIU:** Fer una comprobació de quins resultats són millors entrenant amb el model AFAD i comparant els resultas del testeig amb el del model CAD i els que ja tenim del model AFAD.
 
+· Entrenar: dataset AFAD -> Test: dataset CACD
+
 
 
 ## 3. Probar a entrenar amb el model CACD i testejar amb el model AFAD.
 
 **OBJECTIU:** Fer les comparacions al igual que el punt anterior per a comprobar quins resultats són millors de testig i poder analitzar quins model entrena millor. 
+
+· Entrenar: dataset CACD -> Test: dataset AFAD
 
