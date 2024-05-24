@@ -27,11 +27,11 @@ COSES A FER:
 ## Sessio 3
 
 Noves tasques:
-.........
+(aquesta setmana)
 - 1. Dataset original vs Dataset Split propi (tot congelat)
 - 2. Mirar arquitectures millor (tot congelat)
 - 3. Afegir capes intermitjes a FC (Batchnorm, dropout...)
 - 4. Prentrenar amb el model prentrenat (primer tot congelat per pretrain de mes descongelar) = Domain Adaptation
-........
+(extra??)
 - 5. Provar DA al dataloader
 - 6. LR policies (cos)
