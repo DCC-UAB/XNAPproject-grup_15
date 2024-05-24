@@ -29,7 +29,8 @@ COSES A FER:
 Noves tasques:
 - Mirar quina resnet es millor (tot congelat)
 - Afegir una capa intermadia de neurona
-
+- Prentrenar amb el model prentrenat (utilitzar anterior model en comptes de resnet)
+- Entrenar i testesjar amb diferents models 
 
 Afegir:
 - Batch norm
