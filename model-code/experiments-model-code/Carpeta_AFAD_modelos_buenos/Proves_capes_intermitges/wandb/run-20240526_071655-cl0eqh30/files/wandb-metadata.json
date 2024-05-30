@@ -1,0 +1,85 @@
+{
+    "os": "Linux-5.15.0-1064-azure-x86_64-with-glibc2.17",
+    "python": "3.8.16",
+    "heartbeatAt": "2024-05-26T07:16:56.087252",
+    "startedAt": "2024-05-26T07:16:55.619876",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--cuda",
+        "0",
+        "--seed",
+        "1",
+        "--outpath",
+        "/home/xnmaster/projecte/XNAPproject-grup_15/model-code/experiments-model-code/Carpeta_AFAD_modelos_buenos/Proves_capes_intermitges"
+    ],
+    "state": "running",
+    "program": "model_resnet_50_tot_congelat_256_neurones_penultima_capa.py",
+    "codePathLocal": "model_resnet_50_tot_congelat_256_neurones_penultima_capa.py",
+    "codePath": "model-code/experiments-model-code/Carpeta_AFAD_modelos_buenos/Proves_capes_intermitges/model_resnet_50_tot_congelat_256_neurones_penultima_capa.py",
+    "git": {
+        "remote": "https://github.com/DCC-UAB/XNAPproject-grup_15",
+        "commit": "3ec905267585b2b2d229efce888ee474efae8ceb"
+    },
+    "email": "xiscacompanyramis9@gmail.com",
+    "root": "/home/xnmaster/projecte/XNAPproject-grup_15",
+    "host": "labDAGLBU",
+    "username": "xnmaster",
+    "executable": "/anaconda/envs/py38_default/bin/python",
+    "cpu_count": 6,
+    "cpu_count_logical": 6,
+    "cpu_freq": {
+        "current": 2593.993,
+        "min": 0.0,
+        "max": 0.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 2593.993,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2593.993,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2593.993,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2593.993,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2593.993,
+            "min": 0.0,
+            "max": 0.0
+        },
+        {
+            "current": 2593.993,
+            "min": 0.0,
+            "max": 0.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 145.1909637451172,
+            "used": 116.90277481079102
+        }
+    },
+    "gpu": "Tesla V100-PCIE-16GB",
+    "gpu_count": 1,
+    "gpu_devices": [
+        {
+            "name": "Tesla V100-PCIE-16GB",
+            "memory_total": 16945512448
+        }
+    ],
+    "memory": {
+        "total": 110.04522705078125
+    }
+}
