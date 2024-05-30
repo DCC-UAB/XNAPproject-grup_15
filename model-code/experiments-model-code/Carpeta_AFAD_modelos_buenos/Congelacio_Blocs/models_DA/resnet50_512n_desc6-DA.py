@@ -115,7 +115,7 @@ wandb.init(
     # set the wandb project where this run will be logged
         entity='xisca',
         project="projecte-deep-ordenat",
-        name = 'AFAD-RESNET-50-DESCONGELANT-6-BLOCK-MENYS-FC-DATASET-PROPI-PENULTIMA-CAPA-512-NEURONES-GUARDA-MODEL - DA - 50',
+        name = f'RESNET50 512n 6 descongelats - DA {DA_RATIO}% transf{transform_num}',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
