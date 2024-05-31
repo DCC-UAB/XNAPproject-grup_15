@@ -1,0 +1,5 @@
+NOMS CAPES FINALS FC:
+
+- fc1: Linear(num_ftrs->512) + ReLU + Dropout(0.5) + Linear(512->1) 
+
+- fc2: Dropout(0.5) + Linear(num_ftrs->512) + ReLU() +  Linear(512->1)
