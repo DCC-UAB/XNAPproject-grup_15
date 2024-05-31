@@ -130,12 +130,12 @@ wandb.init(
     # set the wandb project where this run will be logged
         entity='xisca',
         project="projecte-deep-ordenat",
-        name = 'RESNET50-descongela {N_BLOCS_DESCONGELATS}, mitja de {N_NEURONES_MIG}, dropout {DROPOUT_PROB}',
+        name = 'RESNET50-descongela {N_BLOCS_DESCONGELATS}, mitja de {N_NEURONES_MIG}, dropout {DROPOUT_PROB}-fc1',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
             "architecture": "MSE",
-            "model": f"resnet50-descong {N_BLOCS_DESCONGELATS}-mitja {N_NEURONES_MIG}",
+            "model": f"resnet50-descong {N_BLOCS_DESCONGELATS}-mitja {N_NEURONES_MIG}-fc1",
             "dataset": "afad",
             "epochs": num_epochs,
             "pretain_model": os.path.basename(PRETRAIN_MODEL_PATH),

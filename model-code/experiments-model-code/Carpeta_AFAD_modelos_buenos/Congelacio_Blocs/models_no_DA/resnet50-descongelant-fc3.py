@@ -87,7 +87,7 @@ DROPOUT_PROB = args.dropout_prob
 
 LOGFILE = os.path.join(PATH, 'training.log')
 TEST_PREDICTIONS = os.path.join(PATH, 'test_predictions.log')
-BEST_MODEL_PATH = os.path.join(PATH, f'bm-rn50-desc{N_BLOCS_DESCONGELATS}-mig{N_NEURONES_MIG}-drp{DROPOUT_PROB}-fc2.pth')
+BEST_MODEL_PATH = os.path.join(PATH, f'bm-rn50-desc{N_BLOCS_DESCONGELATS}-mig{N_NEURONES_MIG}-drp{DROPOUT_PROB}-fc3.pth')
 
 # Logging
 
@@ -130,12 +130,12 @@ wandb.init(
     # set the wandb project where this run will be logged
         entity='xisca',
         project="projecte-deep-ordenat",
-        name = f'RESNET50-descongela {N_BLOCS_DESCONGELATS}, mitja de {N_NEURONES_MIG}, dropout {DROPOUT_PROB}-fc2',
+        name = f'RESNET50-descongela {N_BLOCS_DESCONGELATS}, mitja de {N_NEURONES_MIG}, dropout {DROPOUT_PROB}-fc3',
         # track hyperparameters and run metadata
         config={
             "learning_rate": learning_rate,
             "architecture": "MSE",
-            "model": f"resnet50-descong {N_BLOCS_DESCONGELATS}-mitja {N_NEURONES_MIG}-fc2",
+            "model": f"resnet50-descong {N_BLOCS_DESCONGELATS}-mitja {N_NEURONES_MIG}-fc3",
             "dataset": "afad",
             "epochs": num_epochs,
             "pretain_model": os.path.basename(PRETRAIN_MODEL_PATH),
@@ -230,10 +230,12 @@ def init_resnet50(grayscale):
     # Ajustar la penúltima capa para evitar un cambio brusco antes de la capa de salida
     hidden_size = 512
     
+    # fc3
     model.fc = nn.Sequential(
         nn.Dropout(DROPOUT_PROB),
         nn.Linear(num_ftrs, hidden_size),
         nn.ReLU(),
+        nn.Dropout(DROPOUT_PROB),
         nn.Linear(hidden_size, 1) 
     )
 
