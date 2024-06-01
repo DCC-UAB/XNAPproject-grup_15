@@ -33,3 +33,20 @@ Noves tasques:
 - 4. Prentrenar amb el model prentrenat (primer tot congelat per pretrain de mes descongelar) = Domain Adaptation
 - 5. Provar DA al dataloader
 - 6. LR policies (cos)
+ 
+## Sessio 4
+!!!Augmentar batch
+Canviar a dataset CACD:
+- 1. provar millors configuracions AFAD en CACD (primer amb model amb pretrain default)
+- 2. provar diferents pretrains:
+    - amb preentrenar amb model del 1.
+    - preentrenar amb model tot congelat, descongelant 1 bloc +
+    - preentrenar amb AFAD best model
+- 3. provar predicts
+      - mirar error per edats
+      - mirar error per sexe
+      - mirar casos especials (negre?)
+- 4. extra:
+        - fer detector cares
+        - creuar train test dels datasets
+        - ficar fotos de profes (obv la del Ramon això no es extra es obligatori xd)
