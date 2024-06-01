@@ -16,6 +16,9 @@ import argparse
 import sys
 import random
 
+# import viola jones face recognition
+import cv2
+
 from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
 
@@ -198,30 +201,39 @@ wandb.init(
             }
     )
 
-# def task_importance_weights(label_array):
-#     uniq = torch.unique(label_array)
-#     num_examples = label_array.size(0)
+###################
+# Viola Jones Face Cropping
+###################
 
-#     m = torch.zeros(uniq.shape[0])
+import cv2
+import numpy as np
+from PIL import Image
+import torchvision.transforms as transforms
 
-#     for i, t in enumerate(torch.arange(torch.min(uniq), torch.max(uniq))):
-#         m_k = torch.max(torch.tensor([label_array[label_array > t].size(0), 
-#                                       num_examples - label_array[label_array > t].size(0)]))
-#         m[i] = torch.sqrt(m_k.float())
-
-#     imp = m/torch.max(m)
-#     return imp
-
-
-# # Data-specific scheme
-# if not IMP_WEIGHT:
-#     imp = torch.ones(NUM_CLASSES-1, dtype=torch.float)
-# elif IMP_WEIGHT == 1:
-#     imp = task_importance_weights(ages)
-#     imp = imp[0:NUM_CLASSES-1]
-# else:
-#     raise ValueError('Incorrect importance weight parameter.')
-# imp = imp.to(DEVICE)
+def violla_jones_crop(img):
+    # Convert PIL Image to NumPy array
+    img_np = np.array(img)
+    
+    # Convert RGB to BGR
+    img_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+    
+    # Load the cascade
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+    
+    # Detect faces
+    faces = face_cascade.detectMultiScale(img_bgr, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    
+    # Assuming each image has exactly one face, crop the detected face
+    if len(faces) > 0:
+        x, y, w, h = faces[0]
+        cropped_img = img_bgr[y:y+h, x:x+w]
+        
+        # Convert back to PIL Image
+        cropped_pil = Image.fromarray(cv2.cvtColor(cropped_img, cv2.COLOR_BGR2RGB))
+        return cropped_pil
+    else:
+        # Return the original image if no face is detected
+        return img
 
 
 ###################
@@ -275,8 +287,8 @@ class CACDDataset(Dataset):
     def __len__(self):
         return self.y.shape[0]
 
-
 custom_transform = transforms.Compose([transforms.Resize((128, 128)),
+                                       transforms.Lambda(lambda img: violla_jones_crop(img)),  # Apply Viola-Jones cropping
                                        transforms.RandomCrop((120, 120)),
                                        transforms.ToTensor()])
 
