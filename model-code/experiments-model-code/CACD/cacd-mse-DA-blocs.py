@@ -288,10 +288,11 @@ class CACDDataset(Dataset):
     def __len__(self):
         return self.y.shape[0]
 
-custom_transform = transforms.Compose([transforms.Resize((128, 128)),
-                                       transforms.Lambda(lambda img: violla_jones_crop(img)),  # Apply Viola-Jones cropping
-                                       transforms.RandomCrop((120, 120)),
-                                       transforms.ToTensor()])
+custom_transform = transforms.Compose([
+                                        transforms.Lambda(lambda img: violla_jones_crop(img)),  # Apply Viola-Jones cropping,
+                                        transforms.Resize((128, 128)),
+                                        transforms.RandomCrop((120, 120)),
+                                        transforms.ToTensor()])
 
 train_dataset = CACDDataset(csv_path=TRAIN_CSV_PATH,
                             img_dir=IMAGE_PATH,
