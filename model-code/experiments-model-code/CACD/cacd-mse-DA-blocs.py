@@ -198,6 +198,7 @@ wandb.init(
             "epochs": num_epochs,
             "pretrain": "basic IMAGENET",
             "dropout": DROPOUT_PROB,
+            "vj_crop": "yes",
             }
     )
 
