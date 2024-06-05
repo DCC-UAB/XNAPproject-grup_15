@@ -53,15 +53,15 @@ Canviar a dataset CACD:
     
 ## INDEX (versio 1)
 1. Dades (Datasets)
-   1.1 Dataset Split
-   1.2 Nova distribució
+   - Dataset Split
+   - Nova distribució
 2. Metriques i Loss
 3. Solucions Overfitting
-   3.1 Data Augmentation
-   3.2 Feature Extraction
-   3.3 Adaptative Learning rate
+   - Data Augmentation
+   - Feature Extraction
+   - Adaptative Learning rate
 4. Congelació Blocs
-   4.1 Arquitectures
+   - Arquitectures
 5. Best Model AFAD i CACD
 6. Generalització
 
