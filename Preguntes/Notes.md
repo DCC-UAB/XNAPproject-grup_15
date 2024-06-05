@@ -58,3 +58,10 @@ Canviar a dataset CACD:
 2. Metriques i Loss
 3. Solucions Overfitting
    3.1 Data Augmentation
+   3.2 Feature Extraction
+   3.3 Adaptative Learning rate
+4. Congelació Blocs
+   4.1 Arquitectures
+5. Best Model AFAD i CACD
+6. Generalització
+
