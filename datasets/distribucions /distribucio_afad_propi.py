@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
 # Leer los datos de los archivos CSV
 train_df = pd.read_csv('C:/Users/eduar/OneDrive/Escritorio/datasets/afad-propi-train.csv')
 test_df = pd.read_csv('C:/Users/eduar/OneDrive/Escritorio/datasets/afad-propi-test.csv')
