@@ -51,17 +51,17 @@ Canviar a dataset CACD:
         - creuar train test dels datasets
         - ficar fotos de profes (obv la del Ramon això no es extra es obligatori xd)
     
-## INDEX (versio 1)
+## INDEX (versio 1.2)
 1. Dades (Datasets)
    - Dataset Split
    - Nova distribució
 2. Metriques i Loss
-3. Solucions Overfitting
-   - Data Augmentation
-   - Feature Extraction
-   - Adaptative Learning rate
-4. Congelació Blocs
+3. Congelació Blocs
    - Arquitectures
+4. Solucions Overfitting
+   - Data Augmentation
+   - Adaptative Learning rate
+   - etc...
 5. Best Model AFAD i CACD
-6. Generalització
+6. Generalització / Validacions 
 
