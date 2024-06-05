@@ -3,7 +3,7 @@ from collections import defaultdict
 
 AFAD_PATH_train = 'datasets/afad-propi-test.csv'
 AFAD_PATH_test = 'datasets/afad-propi-test.csv'
-age_ranges_afad = [(0, 6), (7, 13), (14, 20), (21, 27), (28, 30)]
+age_ranges_afad = [(0, 5), (6, 11), (12, 17), (18, 23), (24, 29)]
 # GROUPS ------------1--------2--------3---------4---------5
 
 CACD_PATH_train = 'datasets/cacd-train1.csv'
