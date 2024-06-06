@@ -52,12 +52,12 @@ Canviar a dataset CACD:
         - ficar fotos de profes (obv la del Ramon això no es extra es obligatori xd)
     
 ## INDEX (versio final)
-1- Mètriques i Loss 
-2- Datasets
-3- Models AFAD
-4- Models CACD
-5-Generalització dels models
-6- Avaluació dels models
-7- Prediccions extras
-8- Conclusions
+1. Mètriques i Loss
+2. Datasets
+3. Models AFAD
+4. Models CACD
+5. Generalització dels models
+6. Avaluació dels models
+7. Prediccions extras
+8. Conclusions
 
