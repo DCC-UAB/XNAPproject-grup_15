@@ -45,3 +45,5 @@ Aquest és el segon conjunt de dades que tenim, amb imatges de 160.000 celebrita
 
 En aquest cas, tornem a tenir una mala distribució de les edats, però no tan exagerada com en el cas de l'AFAD. Igualment vam optar per retallar una mica el conjunt de dades, i quedar-nos amb una distribució prou equilibrada, que comprenia edats dels 15 als 68. Cal mencionar que aquest conjunt de dades no inclou el camp de gènere. A continuació es mostra la distribució de les dades per les edats seleccionades pel nostre model. Es pot veure com està molt més equilibrat que l'AFAD.
 
+[CONTINUACIÓ AL PDF](ruta/al/archivo.pdf)
+
