@@ -1,4 +1,4 @@
-# Predicció d'Edat
+# AGE PREDICTOR USING REGRESSION MODEL
 
 **Autors:** Eduard Ara (1636341), Abril Batalla (1638650), Francesca Company (1598017), Andreu Mir (1637558)  
 **Grup:** 15  
